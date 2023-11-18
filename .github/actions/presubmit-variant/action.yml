@@ -1,0 +1,41 @@
+name: presubmit
+inputs:
+  variant:
+    required: true
+  archs:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v1.2.0
+
+    - name: Populate workspace with variant source only
+      shell: bash
+      run: |
+        shopt -s dotglob && tmp="$(mktemp -d)" && \
+          mv ${{ inputs.variant }}/* ${tmp}/ && \
+          mv .github ${tmp}/ && \
+          rm -rf ./* && mv ${tmp}/* . && \
+          echo ".github/" >> .melangeignore && tree -a . && \
+          sudo rm -rf /work && sudo mkdir /work
+
+    - uses: chainguard-images/actions/apko-build@main
+      with:
+        config: apko.yaml
+        tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
+        archs: ${{ inputs.archs }}
+
+    - name: Load image from apko-produced tarball
+      shell: bash
+      run: |
+        docker load < output.tar
+
+    - name: Smoke test
+      shell: bash
+      run: |
+        ref="ghcr.io/${{ github.repository }}/${{ inputs.variant }}"
+        docker run -d --rm -p 8080:8080 --name smoketest "${ref}"
+        trap "docker rm -f smoketest" EXIT
+        sleep 5 # Give server a few seconds to come up
+        curl -v --max-time 10 http://localhost:8080/ | grep 'Hello World!'

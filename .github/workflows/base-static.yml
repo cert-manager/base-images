@@ -1,0 +1,27 @@
+name: base-static
+concurrency: base-static
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - .github/actions/release-variant/action.yml
+      - .github/workflows/base-static.yml
+      - base-static/**
+jobs:
+  build:
+    name: Release base-static image
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/release-variant
+        with:
+          variant: base-static
+          archs: amd64,aarch64,armv7
