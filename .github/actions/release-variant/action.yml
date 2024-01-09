@@ -7,8 +7,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Setup QEMU
-      uses: docker/setup-qemu-action@v1.2.0
+    - uses: imjasonh/setup-crane@v0.3
 
     - name: Populate workspace with variant source only
       shell: bash
@@ -20,8 +19,43 @@ runs:
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
+    # List artifacts and digests for latest image
+    - shell: bash
+      run: ./.github/actions/release-variant/cleanup_script/find_latest.sh ghcr.io/${{ github.repository }}/${{ inputs.variant }} /tmp/artifact_digests.txt
+
     - uses: chainguard-images/actions/apko-snapshot@main
       with:
         config: apko.yaml
         base-tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
         archs: ${{ inputs.archs }}
+
+    # List artifacts that are no longer linked to the tag
+    - shell: bash
+      run: ./.github/actions/release-variant/cleanup_script/cleanup_dangling.sh /tmp/artifact_digests.txt /tmp/digests_to_delete.json
+
+    # Delete all the package versions linked to the digests in the list
+    - uses: actions/github-script@v7
+      env:
+        VARIANT: ${{ inputs.variant }}
+      with:
+        script: |
+          const { repo } = context.repo;
+          const { VARIANT } = process.env;
+          const package_name = `${repo}/${VARIANT}`;
+
+          const digests_to_delete = require('/tmp/digests_to_delete.json');
+
+          const package_versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser({
+            package_type: "container",
+            package_name: package_name,
+          });
+          
+          for (const version of package_versions.data) {
+            if (!digests_to_delete.includes(version.name)) continue
+
+            github.rest.packages.deletePackageVersionForAuthenticatedUser({
+              package_type: "container",
+              package_name: package_name,
+              package_version_id: version.id,
+            });
+          }
