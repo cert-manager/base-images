@@ -1,0 +1,41 @@
+name: release
+inputs:
+  variant:
+    required: true
+  username:
+    required: true
+  token:
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: imjasonh/setup-crane@v0.3
+
+    - name: Populate workspace with variant source only
+      shell: bash
+      run: |
+        shopt -s dotglob && tmp="$(mktemp -d)" && \
+          mv ${{ inputs.variant }}/* ${tmp}/ && \
+          mv .github ${tmp}/ && \
+          rm -rf ./* && mv ${tmp}/* . && \
+          echo ".github/" >> .melangeignore && tree -a . && \
+          sudo rm -rf /work && sudo mkdir /work
+
+    # List artifacts and digests for latest image
+    - shell: bash
+      run: ./.github/actions/release-variant/scripts/find_latest.sh quay.io/jetstack/${{ inputs.variant }} /tmp/artifact_digests.txt
+
+    - uses: chainguard-images/actions/apko-snapshot@44e0af71f27d227e937fa07faccbebec700cac07
+      with:
+        config: apko.yaml
+        archs: aarch64,armhf,armv7,ppc64le,s390x,x86,x86_64
+        registry: quay.io
+        base-tag: quay.io/jetstack/${{ inputs.variant }}
+        generic-user: ${{ inputs.username }}
+        generic-pass: ${{ inputs.token }}
+        username: ${{ inputs.username }}
+        token: ${{ inputs.token }}
+
+    # List artifacts that are no longer linked to the tag
+    - shell: bash
+      run: ./.github/actions/release-variant/scripts/cleanup_dangling.sh /tmp/artifact_digests.txt

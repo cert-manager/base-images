@@ -1,0 +1,24 @@
+contents:
+  repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
+  keyring:
+    # apko fetches the keyring from https://alpinelinux.org/releases.json
+    # However, it seems like that site has a wrong entry for the ppc64le architecture.
+    # That is why we have to add an extra key here.
+    - https://alpinelinux.org/keys/alpine-devel@lists.alpinelinux.org-58cbb476.rsa.pub
+
+  packages:
+    - tzdata
+    - ca-certificates-bundle
+    - mount
+    - umount
+
+accounts:
+  groups:
+    - groupname: nonroot
+      gid: 65532
+  users:
+    - username: nonroot
+      uid: 65532
+      gid: 65532
+  run-as: 65532

@@ -1,0 +1,28 @@
+name: base-static-csi
+concurrency: base-static-csi
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - .github/actions/release-variant/action.yml
+      - .github/workflows/base-static-csi.yml
+      - base-static-csi/**
+jobs:
+  build:
+    name: Release base-static-csi image
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/release-variant
+        with:
+          variant: base-static-csi
+          username: ${{ secrets.QUAY_USERNAME }}
+          token: ${{ secrets.QUAY_PASSWORD }}

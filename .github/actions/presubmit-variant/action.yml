@@ -1,0 +1,32 @@
+name: presubmit
+inputs:
+  variant:
+    required: true
+  arch:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v1.2.0
+
+    - name: Populate workspace with variant source only
+      shell: bash
+      run: |
+        shopt -s dotglob && tmp="$(mktemp -d)" && \
+          mv ${{ inputs.variant }}/* ${tmp}/ && \
+          mv .github ${tmp}/ && \
+          rm -rf ./* && mv ${tmp}/* . && \
+          echo ".github/" >> .melangeignore && tree -a . && \
+          sudo rm -rf /work && sudo mkdir /work
+
+    - uses: chainguard-images/actions/apko-build@44e0af71f27d227e937fa07faccbebec700cac07
+      with:
+        config: apko.yaml
+        tag: quay.io/jetstack/${{ inputs.variant }}
+        archs: ${{ inputs.arch }}
+
+    - name: Load image from apko-produced tarball
+      shell: bash
+      run: |
+        docker load < output.tar
