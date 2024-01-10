@@ -1,6 +1,6 @@
 contents:
   repositories:
-    - https://dl-cdn.alpinelinux.org/alpine/latest-stable/main
+    - "https://dl-cdn.alpinelinux.org/alpine/v3.19/main"
   packages:
     - tzdata
     - ca-certificates-bundle

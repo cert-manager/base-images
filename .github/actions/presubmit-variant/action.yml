@@ -20,7 +20,7 @@ runs:
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
-    - uses: chainguard-images/actions/apko-build@main
+    - uses: chainguard-images/actions/apko-build@44e0af71f27d227e937fa07faccbebec700cac07
       with:
         config: apko.yaml
         tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}

@@ -23,11 +23,12 @@ runs:
     - shell: bash
       run: ./.github/actions/release-variant/cleanup_script/find_latest.sh ghcr.io/${{ github.repository }}/${{ inputs.variant }} /tmp/artifact_digests.txt
 
-    - uses: chainguard-images/actions/apko-snapshot@main
+    - uses: chainguard-images/actions/apko-snapshot@44e0af71f27d227e937fa07faccbebec700cac07
       with:
         config: apko.yaml
         base-tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
         archs: ${{ inputs.archs }}
+        keyring-append: 
 
     # List artifacts that are no longer linked to the tag
     - shell: bash
