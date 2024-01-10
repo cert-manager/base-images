@@ -4,5 +4,5 @@ This repository contains [apko](https://apko.dev) build automation for the [cert
 
 The resulting images can be found here:
 
-- [quay.io/jetstack/base-static](https://quay.io/jetstack/base-static)
-- [quay.io/jetstack/base-static-csi](https://quay.io/jetstack/base-static-csi)
+- [quay.io/jetstack/base-static](https://quay.io/repository/jetstack/base-static)
+- [quay.io/jetstack/base-static-csi](https://quay.io/repository/jetstack/base-static-csi)
