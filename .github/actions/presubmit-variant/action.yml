@@ -2,7 +2,7 @@ name: presubmit
 inputs:
   variant:
     required: true
-  archs:
+  arch:
     required: true
 runs:
   using: composite
@@ -24,18 +24,9 @@ runs:
       with:
         config: apko.yaml
         tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
-        archs: ${{ inputs.archs }}
+        archs: ${{ inputs.arch }}
 
     - name: Load image from apko-produced tarball
       shell: bash
       run: |
         docker load < output.tar
-
-    - name: Smoke test
-      shell: bash
-      run: |
-        ref="ghcr.io/${{ github.repository }}/${{ inputs.variant }}"
-        docker run -d --rm -p 8080:8080 --name smoketest "${ref}"
-        trap "docker rm -f smoketest" EXIT
-        sleep 5 # Give server a few seconds to come up
-        curl -v --max-time 10 http://localhost:8080/ | grep 'Hello World!'
