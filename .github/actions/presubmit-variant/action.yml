@@ -20,7 +20,7 @@ runs:
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
-    - uses: chainguard-images/actions/apko-build@44e0af71f27d227e937fa07faccbebec700cac07
+    - uses: chainguard-images/actions/apko-build@865de1840519dea43c67c07db74da6ea00205e8a
       with:
         config: apko.yaml
         tag: quay.io/jetstack/${{ inputs.variant }}
