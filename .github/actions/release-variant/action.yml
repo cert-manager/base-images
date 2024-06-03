@@ -24,7 +24,7 @@ runs:
     - uses: chainguard-images/actions/apko-snapshot@865de1840519dea43c67c07db74da6ea00205e8a
       with:
         config: apko.yaml
-        archs: aarch64,armv7,ppc64le,x86_64
+        archs: aarch64,armv7,ppc64le,x86_64,s390x
         registry: quay.io
         base-tag: quay.io/jetstack/${{ inputs.variant }}
         generic-user: ${{ inputs.username }}
