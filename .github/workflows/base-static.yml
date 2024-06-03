@@ -1,6 +1,7 @@
 name: base-static
 concurrency: base-static
 on:
+  workflow_dispatch: {}
   schedule:
     - cron: '0 0 * * *'
   push:
