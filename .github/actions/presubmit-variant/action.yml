@@ -8,7 +8,7 @@ runs:
   using: composite
   steps:
     - name: Setup QEMU
-      uses: docker/setup-qemu-action@v1.2.0
+      uses: docker/setup-qemu-action@53851d14592bedcffcf25ea515637cff71ef929a # v3.3.0
 
     - name: Populate workspace with variant source only
       shell: bash
@@ -20,8 +20,8 @@ runs:
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
-    # Confirmed up-to-date on 2024-07-30
-    - uses: chainguard-images/actions/apko-build@70ef33423618955be903186c527e677a8bc4689b
+    # Confirmed up-to-date on: 2025-01-08
+    - uses: chainguard-images/actions/apko-build@df628db44fb3cf4ee72636f4443df37af6d1e3e5
       with:
         config: apko.yaml
         tag: quay.io/jetstack/${{ inputs.variant }}
