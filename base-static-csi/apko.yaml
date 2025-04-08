@@ -1,6 +1,11 @@
 contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.21/main
+  keyring:
+    # apko fetches the keyring from https://alpinelinux.org/releases.json
+    # However, it seems like that site has a wrong entry for the ppc64le architecture.
+    # That is why we have to add an extra key here.
+    - https://alpinelinux.org/keys/alpine-devel@lists.alpinelinux.org-58cbb476.rsa.pub
 
   packages:
     - tzdata
