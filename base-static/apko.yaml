@@ -1,11 +1,19 @@
 contents:
   repositories:
-    - https://dl-cdn.alpinelinux.org/alpine/v3.21/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.23/main
   keyring:
     # apko fetches the keyring from https://alpinelinux.org/releases.json
-    # However, it seems like that site has a wrong entry for the ppc64le architecture.
+    # However, it seems like that site has a wrong entries/ downloading these files fails.
+    # Also, see https://github.com/chainguard-dev/apko/pull/1949
     # That is why we have to add an extra key here.
-    - https://alpinelinux.org/keys/alpine-devel@lists.alpinelinux.org-58cbb476.rsa.pub
+    - "https://alpinelinux.org/keys/alpine-devel%40lists.alpinelinux.org-6165ee59.rsa.pub" # x86_64
+    - "https://alpinelinux.org/keys/alpine-devel%40lists.alpinelinux.org-616ae350.rsa.pub" # aarch64
+    - "https://alpinelinux.org/keys/alpine-devel%40lists.alpinelinux.org-616ac3bc.rsa.pub" # s390x
+    - "https://alpinelinux.org/keys/alpine-devel%40lists.alpinelinux.org-616abc23.rsa.pub" # ppc64le
+    - "https://alpinelinux.org/keys/alpine-devel%40lists.alpinelinux.org-616adfeb.rsa.pub" # armv7
+    - "https://alpinelinux.org/keys/alpine-devel%40lists.alpinelinux.org-60ac2099.rsa.pub" # riscv64
+    - "https://alpinelinux.org/keys/alpine-devel%40lists.alpinelinux.org-616a9724.rsa.pub" # armhf
+    - "https://alpinelinux.org/keys/alpine-devel%40lists.alpinelinux.org-61666e3f.rsa.pub" # x86
 
   packages:
     - tzdata
