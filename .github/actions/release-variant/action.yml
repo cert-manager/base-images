@@ -9,8 +9,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e # v0.4
-
     - name: Populate workspace with variant source only
       shell: bash
       run: |
