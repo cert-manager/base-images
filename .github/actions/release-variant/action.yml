@@ -19,7 +19,7 @@ runs:
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
-    - uses: chainguard-images/actions/apko-snapshot@e5595253fa40415ea0c8ac3ff791b52eacbfd393 # v1.0.10
+    - uses: chainguard-images/actions/apko-snapshot@95c64af473be476d6169619eb2f372e72b3a1562 # v1.0.11
       with:
         config: apko.yaml
         archs: aarch64,armv7,ppc64le,x86_64,s390x
